@@ -1,9 +1,15 @@
 /*************************************************************************
-* quarternarySearch.cpp searchs a sorted int array in Theta(log[base4](n))
+* quarternarySearch.cpp searchs a sorted int array in O(log[base4](n))
 * Adapted from an article by Taranjit Khokhar
 * September 2016 | IJIRT | Volume 3 Issue 4 | ISSN: 2349-6002
 * IJIRT 143908 INTERNATIONAL JOURNAL OF INNOVATIVE RESEARCH IN TECHNOLOGY
+* Compile: g++ quarternarySearch.cpp -o Qsearch -g -Wall (flags optional)
 * At present, requires sorted ascending or descending array data entry.
+*	 ________________ arr[] ________________
+*	|		|		|		|		|
+*	|<--x/4-->|<--x/4-->|<--x/4-->|<--x/4-->|
+*	|		|		|		|		|
+*   low		j		m		p	    high
 **************************************************************************/
 #include <iostream>
 using std::cin;
@@ -12,57 +18,64 @@ using std::cout;
 using std::string;
 
 int main() {
-	int f, n, flag = 0, arr[10000];
+	int target;							// Search for target.
+	int numElem;							// Number of elements in arr[].
+	int flag = 0;							// Suppresses not found message. 
+	int arr[10000];						// Int buffer.
 	string here = "Search int found: ";
-	cout << "ENTER THE NUMBER OF ELEMENTS: ";
-	cin >> n;
+	string there = " is located at index position ";
 
-	cout << "ENTER THE ELEMENTS OF THE ARRAY: ";
-	for (int m = 0; m < n; m++) {
-		cin >> arr[m];
+	cout << "Enter the number of elements: ";
+	cin >> numElem;
+
+	cout << "Enter the elements of the array:\n";
+	for (int i = 0; i < numElem; i++) {
+		cin >> arr[i];
 	}
 
-	int h = n - 1;
-	int l = 0;
+	int high = numElem - 1;					// high = value at highest index of arr[].
+	int low = 0;
 	
-	cout << "ENTER NUMBER TO BE SEARCHED: ";
-	cin >> f;
+	cout << "Enter number to be searched for: ";
+	cin >> target;
 	
-	while (h >= l){
-		int j = ((3 * l) + h) / 4;
-		int m = (h + l) / 2;
-		int k = ((3 * l) + h) / 4;
-		if (arr[j] == f) {
-			cout << here << arr[j] << "\n";
+	while (high >= low){
+		int j = ((3 * low) + high) / 4;		// j = first quarter index point of arr[].
+		int m = (high + low) / 2;			// m = midpoint index of arr[].
+		int p = ((3 * high) + low) / 4;		// p = 3rd quarter index point of arr[].
+
+		if (arr[j] == target) {
+			cout << here << arr[j] << there << j << ".\n";
 			flag = 1;
-			l = h + 1;
+			low = high + 1;				// Enables exit from while loop.
 		}
-		else if (arr[m] == f) {
-			cout << here << arr[m] << "\n";
+		else if (arr[m] == target) {
+			cout << here << arr[m] << there << m << ".\n";
 			flag = 1;
-			l = h + 1;
+			low = high + 1;				// Enables exit from while loop.
 		}
-		else if (arr[k] == f) {
-			cout << here << arr[k] << "\n";
+		else if (arr[p] == target) {
+			cout << here << arr[p] << there << p << ".\n";
 			flag = 1;
-			l = h + 1;
+			low = high + 1;				// Enables exit from while loop.
 		}
-		else if (f < arr[j]) {
-			h = j - 1;
+		else if (target < arr[j]) {
+			high = j - 1;					// Remove 3/4 of arr[] from the search!
 		}
-		else if (f < arr[m]) {
-			l = j + 1;
-			h = m - 1;
+		else if (target < arr[m]) {
+			low = j + 1;					// Remove 1/4 of arr[] from the search!
+			high = m - 1;					// Remove 2/4 of arr[] from the search!
 		}
-		else if (f < arr[k]) {
-			l = m + 1;
-			h = k - 1;
+		else if (target < arr[p]) {
+			low = m + 1;					// Remove 2/4 of arr[] from the search!
+			high = p - 1;					// Remove 1/4 of arr[] from the search!
 		}
 		else {
-			l = k + 1;
+			low = p + 1;					// Remove 3/4 of arr[] from the search!
 		}
 	}
 	cin.get();
-	if(!flag)
-		cout << "Searched for integer not found!\n";
+	if (!flag) {
+		cout << "Searched for integer, " << target << ", not found!\n";
+	}
 }
